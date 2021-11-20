@@ -1,0 +1,16 @@
+This directory contains all the headers of cuda code. 
+
+Memory Optimization
+
+1. Hash all training data set into memory
+
+2. Apply cublas library for matrix multipication
+
+3. Parallel application in N cpu threads 
+ 
+      N = omp_get_num_threads()
+
+4. Must allow more CPU threads than GPU devices,
+   since only one single device need to used for 
+   each training model, I dont want to spread CPU
+   threads to multiple GPU devices.

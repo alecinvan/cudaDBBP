@@ -1,0 +1,9 @@
+
+The job scheduler to throw the jobs to GPUs, the jobs are managed by slurm.
+
+To invoke the scripts, either
+                chmod 555 scriptname (gives everyone read/execute permission) 
+or 
+                chmod +rx scriptname (gives everyone read/execute permission)
+                chmod u+rx scriptname (gives only the script owner read/execute permission)
+

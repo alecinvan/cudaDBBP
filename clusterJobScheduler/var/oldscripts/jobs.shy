@@ -1,0 +1,47 @@
+#!/bin/bash
+
+OUTCOMEDIR="/cluster/clusterPipeline/MonteCarlo/OUTCOME"
+CUDABPDIR="/cluster/clusterPipeline/MonteCarlo/CUDABP"
+TRAINDATA="/cluster/projects/cuda_neural_net/train_data_set/data/final/trainingdate/couples1day/train_after_oversampling_var_cid.dat"
+TESTDATA="/cluster/projects/cuda_neural_net/train_data_set/data/final/trainingdate/couples1day/train_after_oversampling_var_cid.dat"
+TRAINEDWEIGHTSTR="/TrainedWeight.dat"
+TRAINEDWEIGHTLASTEPOCH="/TrainedWeight.dat"
+
+INPUT=66
+OUTPUT=1
+EPOCH=100
+
+#newrand=$[ ( $RANDOM % ( $[ $highest - $lowest ] + 1 ) ) + $lowest ]
+#v=$[100+(RANDOM%100)]$[1000+(RANDOM%1000)]
+#v=$[RANDOM%15].${v:1:2}${v:4:3}
+#echo $v
+
+##########################
+
+echo `hostname` - $CUDA_VISIBLE_DEVICES
+
+if [  -d $OUTCOMEDIR/`hostname` ] ; then
+         echo -e "Directory $OUTCOMEDIR/`hostname` exists"
+else
+         mkdir $OUTCOMEDIR/`hostname`
+fi
+
+device=$(echo $CUDA_VISIBLE_DEVICES | tr "," "\n")
+for id in $device
+do
+       FHIDDEN=$(($RANDOM%121 + 80))
+       SHIDDEN=$(($RANDOM%61+40))
+
+       if [ -d $OUTCOMEDIR/`hostname`/$id ] ; then
+                  echo -e "Directory $OUTCOMEDIR/`hostname`/$id exists"
+       else
+                  mkdir $OUTCOMEDIR/`hostname`/$id
+       fi
+
+       echo -e "\n$CUDABPDIR/bin/cuda_bp_cluster $id 0.00003 1.2 $INPUT $FHIDDEN $SHIDDEN $OUTPUT $EPOCH $TRAINDATA $TESTDATA $OUTCOMEDIR/`hostname`/$id $TRAINEDWEIGHTSTR $TRAINEDWEIGHTLASTEPOCH\n"
+       $CUDABPDIR/bin/cuda_bp_cluster $id 0.00003 1.2 $INPUT $FHIDDEN $SHIDDEN $OUTPUT $EPOCH $TRAINDATA $TESTDATA $OUTCOMEDIR/`hostname`/$id $TRAINEDWEIGHTSTR $TRAINEDWEIGHTLASTEPOCH 
+
+       sleep 2
+done
+
+

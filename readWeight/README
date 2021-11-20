@@ -1,0 +1,4 @@
+This is an API to read weight string from database. 
+
+
+g++ -o readWeight readWeight.cpp -lpq
